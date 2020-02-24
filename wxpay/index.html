@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>微信支付测试平台</title>
+    <link rel="stylesheet" type="text/css" href="./reset.css">
+    <script src="/home/js/jquery-1.11.0.js" type="text/javascript" charset="utf-8"></script>
+    <style type="text/css">
+    </style>
+    <script src="./wxpay.js"></script>
+</head>
+<body>
+<div class="" style="width: 100%;background: #F7F7F7;">
+<section>
+    <p style="margin-top: 30px;"><img src="/home/img/tiaoshi/LOGO.png" alt=""></p>
+    <div style="margin-top: 30px;display: flex;justify-content: space-between;">
+        <p style="font-size: 20px;">订单提交成功，请尽快付款!订单编号: <span id="order_sn"></span>
+        </p><p>
+        应付金额<span style="font-size: 24px;color: #fe0b0b;" id="money">￥1.00</span>元
+    </p>
+    </div>
+    <p style="margin-top: 20px;" id="tip">二维码将在<span id="seconds">60</span>s后过期，过期后请重新刷新页面获取二维码</p>
+    <div style="height: 500px;margin-top: 30px; box-shadow: 4px 4px 8px 0px #e7e5e5;display: flex;justify-content: space-around;align-items: center;">
+        <p style="width: 390px;text-align: center;">
+            <img style="width: 100%;" src="./index2.php" alt="" id="qrcode"><br><span style="line-height:22px;">请用微信扫一扫二维码支付</span>
+        </p>
+        <p style="width: 390px;text-align: center;">
+            <img src="./pc_icon_phone-bg.png" alt="">
+        </p>
+    </div>
+</section>
+
+<script src="./wxpay.js" type="text/javascript" charset="utf-8"></script>
+
+
+
+<script>
+    var tokensign = JSON.parse(localStorage.getItem("token"));
+    var time = 0;
+    setInterval(function(){
+        time++;
+        if(time <= 60){
+            $.ajax({
+                type: "POST",
+                url: "/api/home/pay/wxpay_status", //+tab,
+                dataType: "json",
+                // order_sn:$("#order_sn").text()
+                data:{token:tokensign,order_sn:$("#order_sn").text()},
+                success: function(data) {
+                    // console.log(data.data)
+
+                    if(data.code == 1){
+                        window.open('/home/order/allorder','_self')
+                    }
+                    if(data.code == -2){
+                        window.open('/','_self')
+                    }
+                }
+            });
+        }
+
+    },1000)
+</script>
+
+</body>
+</html>
